@@ -1,15 +1,17 @@
-const { transactionSign } = require("@zondax/filecoin-signing-tools/js");
-const { FilecoinRPC } = require("@zondax/filecoin-signing-tools/js");
+// @ts-ignore
+import { FilecoinRPC, transactionSign } from "@zondax/filecoin-signing-tools/js";
+
+import { Account } from "./types";
 
 let NODE_URL = "";
 let NODE_TOKEN = "";
 
-function init(url, token) {
+export function init(url: string, token: string) {
   NODE_URL = url;
   NODE_TOKEN = token;
 }
 
-async function sendTrx(from, to, method, value, params) {
+export async function sendTrx(from: Account, to: string, method: number, value: string, params: Uint8Array) {
   const filRPC = new FilecoinRPC({ url: NODE_URL, token: NODE_TOKEN });
   const nonceResp = await filRPC.getNonce(from.address);
   const nonce = nonceResp.result;
@@ -47,7 +49,7 @@ async function sendTrx(from, to, method, value, params) {
   return { Return, ReturnDec };
 }
 
-async function getFee(filRPC, tx) {
+async function getFee(filRPC: any, tx: any) {
   const fees = await filRPC.getGasEstimation({ ...tx });
   const { error, result } = fees;
   if (error) throw new Error(JSON.stringify(error));
@@ -68,5 +70,3 @@ async function getFee(filRPC, tx) {
 
   return tx;
 }
-
-module.exports = { sendTrx, init };

@@ -1,11 +1,12 @@
-const fs = require("fs");
-const path = require("path");
-const { keyDerive } = require("@zondax/filecoin-signing-tools/js");
+import fs from "fs";
+import path from "path";
+import { keyDerive } from "@zondax/filecoin-signing-tools/js";
+import { Contract as HelloWorld } from "./assets/hello_world/definition";
 
 jest.setTimeout(60 * 1000);
 
-const { init } = require("../src/client");
-const { Contract } = require("../src/index");
+import { init } from "../src/client";
+import { Contract } from "../src/index";
 
 let seed, nodeUrl, nodeToken;
 let cidToUse, contractAddress;
@@ -60,7 +61,7 @@ test("Hello World - Method say_hello ", async () => {
 
   init(nodeUrl, nodeToken);
   const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/hello_world/abi.json"), "utf-8"));
-  const client = Contract.load(contractAddress, ABI);
+  const client = Contract.load<HelloWorld>(contractAddress, ABI);
 
   try {
     const message = await client.say_hello(account, "0");
@@ -80,7 +81,7 @@ test("Hello World - Create and Method say_hello ", async () => {
 
   init(nodeUrl, nodeToken);
   const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/hello_world/abi.json"), "utf-8"));
-  const client = Contract.create(cidToUse, ABI);
+  const client = Contract.create<HelloWorld>(cidToUse, ABI);
 
   try {
     await client.new(account, "0");

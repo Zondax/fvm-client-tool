@@ -1,4 +1,5 @@
 .idea
 node_modules
-test/.env
+tests/.env
 yarn.lock
+dist

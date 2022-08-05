@@ -1,9 +1,10 @@
-const cbor = require("@ipld/dag-cbor");
-const { sendTrx } = require("./client");
-const { INIT_ACTOR_ADDRESS, INIT_ACTOR_CREATE_METHOD } = require("./constants");
+import * as cbor from "@ipld/dag-cbor";
+import { sendTrx } from "./client";
+import { INIT_ACTOR_ADDRESS, INIT_ACTOR_CREATE_METHOD } from "./constants";
+import { ArgumentABI, FieldABI, FunctionABI, ReturnABI } from "./types";
 
-function attachConstructor(instance, name, args, rtns) {
-  instance[name] = async (...fullArgs) => {
+function attachConstructor(instance: any, name: string, args: ArgumentABI[], rtns: ReturnABI[]) {
+  instance[name] = async (...fullArgs: any[]) => {
     if (instance.address)
       throw new Error("you cannot create a new instance because this object has already one attached");
 
@@ -22,8 +23,8 @@ function attachConstructor(instance, name, args, rtns) {
   };
 }
 
-function attachMethod(instance, name, args, rtns) {
-  instance[name] = async (...fullArgs) => {
+function attachMethod(instance: any, name: string, args: ArgumentABI[], rtns: ReturnABI[]) {
+  instance[name] = async (...fullArgs: any[]) => {
     if (!instance.address)
       throw new Error(
         "you need to create a new instance of the smart contract first or load the address of an existing one"
@@ -37,7 +38,7 @@ function attachMethod(instance, name, args, rtns) {
   };
 }
 
-function attachMethods(instance, functions, types) {
+export function attachMethods(instance: any, functions: FunctionABI[], types: FieldABI[]) {
   functions.forEach(({ name, index, args, return: rtns }) => {
     instance.methods[name] = index;
     if (name === "new" && index === 1) attachConstructor(instance, name, args, rtns);
@@ -45,7 +46,7 @@ function attachMethods(instance, functions, types) {
   });
 }
 
-function validateResponse(rtns, resp) {
+function validateResponse(rtns: ReturnABI[], resp: string) {
   if (rtns.length === 0 && !!resp) throw new Error("some response data was not expected and received");
   if (rtns.length > 0 && !resp) throw new Error("some response data was expected but not received");
 
@@ -53,7 +54,7 @@ function validateResponse(rtns, resp) {
     const respBuffer = Buffer.from(resp, "base64");
     const decodedResp = cbor.decode(Uint8Array.from(respBuffer));
 
-    if (!decodedResp instanceof Array)
+    if (!(decodedResp instanceof Array))
       throw new Error("response data is not contained inside an array, and it should be");
     if (rtns.length !== decodedResp.length)
       throw new Error("the elements qty in the response are not equal to the ones defined on the ABI");
@@ -67,11 +68,9 @@ function validateResponse(rtns, resp) {
   }
 }
 
-function checkTypes(fields, values) {
+function checkTypes(fields: ReturnABI[], values: any[]) {
   fields.forEach(({ type }, index) => {
     const rcvType = typeof values[index];
     if (rcvType !== type) throw new Error(`value [${values[index]}] should be a [${type}], but it is a [${rcvType}]`);
   });
 }
-
-module.exports = { attachMethods };

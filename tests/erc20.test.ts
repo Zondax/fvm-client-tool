@@ -1,11 +1,12 @@
-const fs = require("fs");
-const path = require("path");
-const { keyDerive } = require("@zondax/filecoin-signing-tools/js");
+import fs from "fs";
+import path from "path";
+import { keyDerive } from "@zondax/filecoin-signing-tools/js";
+import { Contract as ERC20 } from "./assets/erc20/definition";
 
 jest.setTimeout(60 * 1000);
 
-const { init } = require("../src/client");
-const { Contract } = require("../src/index");
+import { init } from "../src/client";
+import { Contract } from "../src/index";
 
 const ADDRESS_ID_1 = "1006";
 
@@ -62,7 +63,7 @@ test("ERC20 - Method GetSymbol", async () => {
 
   init(nodeUrl, nodeToken);
   const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/erc20/abi.json"), "utf-8"));
-  const client = Contract.load(contractAddress, ABI);
+  const client = Contract.load<ERC20>(contractAddress, ABI);
 
   try {
     const message = await client.GetSymbol(account, "0");
@@ -82,7 +83,7 @@ test("ERC20 - Create and Method GetSymbol ", async () => {
 
   init(nodeUrl, nodeToken);
   const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/erc20/abi.json"), "utf-8"));
-  const client = Contract.create(cidToUse, ABI);
+  const client = Contract.create<ERC20>(cidToUse, ABI);
 
   try {
     await client.new(account, "0", "ZondaxCoin", "ZDX", 18, 1000000, ADDRESS_ID_1);
