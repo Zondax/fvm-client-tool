@@ -14,6 +14,6 @@
   },
   "dependencies": {
     "@ipld/dag-cbor": "^7.0.2",
-    "@zondax/filecoin-signing-tools": "^1.1.0"
+    "@zondax/filecoin-signing-tools": "1.0.1"
   }
 }

@@ -1,5 +1,5 @@
 const { transactionSign } = require("@zondax/filecoin-signing-tools/js")
-const FilecoinRPC = require("@zondax/filecoin-signing-tools/rpc")
+const {FilecoinRPC} = require("@zondax/filecoin-signing-tools/js")
 
 let NODE_URL = ""
 let NODE_TOKEN = ""
