@@ -9,14 +9,14 @@ function init(url, token){
     NODE_TOKEN = token
 }
 
-async function sendTrx(from, to, method, params){
+async function sendTrx(from, to, method, value, params){
     const filRPC = new FilecoinRPC({ url: NODE_URL, token: NODE_TOKEN });
     const nonce = (await filRPC.getNonce(from.address)).result;
 
     let tx = {
         From: from.address,
         To: to,
-        Value: "0",
+        Value: value,
         Method: method,
         Params: Buffer.from(params).toString("base64"),
         Nonce: nonce,

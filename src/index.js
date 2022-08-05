@@ -11,21 +11,21 @@ class Contract{
 
         functions.forEach( ( {name, index, args, return: rtns} ) => {
             instance.methods[name] = index
-            instance[name] = async (...rcvArgs) => {
+            instance[name] = async (...fullArgs) => {
                 console.log(`Call [${name}] - Index [${instance.methods[name]}]`)
 
                 if(args.length == 0)
                     console.log( "No args")
                 else
                     args.forEach( ({name, type}, index) => {
-                        console.log( `Arg --> Name [${name}] - Type [${type}] - Value [${rcvArgs[index+1]}]`)
+                        console.log( `Arg --> Name [${name}] - Type [${type}] - Value [${fullArgs[index+2]}]`)
                     })
 
                 rtns.forEach(( rtn ) => console.log(`Return --> [${rtn.type}]`))
 
-                const from = rcvArgs[0]
-                const params = cbor.encode([]);
-                const resp = await sendTrx(from, instance.address, instance.methods[name], params)
+                const [from, value, ...txParams] = fullArgs
+                const params = cbor.encode(txParams);
+                const resp = await sendTrx(from, instance.address, instance.methods[name], value, params)
 
 
                 if( rtns.length === 0 && !!resp ) throw new Error("some response data was not expected and received")
