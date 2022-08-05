@@ -11,7 +11,6 @@ jobs:
       NODE_URL: ${{ secrets.NODE_URL }}
       NODE_TOKEN: ${{ secrets.NODE_TOKEN }}
       SEED: ${{ secrets.SEED }}
-      CONTRACT_ADDRESS: ${{ secrets.CONTRACT_ADDRESS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
