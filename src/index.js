@@ -2,7 +2,7 @@ const fs = require("fs");
 const cbor = require("@ipld/dag-cbor");
 const { sendTrx } = require("./client");
 const { checkTypes } = require("./utils");
-const { INIT_ACTOR_INSTALL_METHOD, INIT_ACTOR_ADDRESS } = require("./constants");
+const { INIT_ACTOR_INSTALL_METHOD, INIT_ACTOR_ADDRESS, INIT_ACTOR_CREATE_METHOD } = require("./constants");
 
 class Contract {
   methods = {};
@@ -13,12 +13,21 @@ class Contract {
     const code = fs.readFileSync(binaryPath);
     const params = cbor.encode([new Uint8Array(code.buffer)]);
 
-    const resp = await sendTrx(account, INIT_ACTOR_ADDRESS, INIT_ACTOR_INSTALL_METHOD, "0", params);
+    const { Return: resp } = await sendTrx(account, INIT_ACTOR_ADDRESS, INIT_ACTOR_INSTALL_METHOD, "0", params);
 
     const respBuffer = Buffer.from(resp, "base64");
     const [cid, isInstalled] = cbor.decode(Uint8Array.from(respBuffer));
 
-    return [cid.toString(), isInstalled];
+    return { cid, isInstalled };
+  }
+
+  static async instantiate(account, cid, value, ...txParams) {
+    const params = cbor.encode([cid, Buffer.from(cbor.encode(txParams))]);
+
+    const { ReturnDec: resp } = await sendTrx(account, INIT_ACTOR_ADDRESS, INIT_ACTOR_CREATE_METHOD, value, params);
+    const { IDAddress, RobustAddress } = resp;
+
+    return { IDAddress, RobustAddress };
   }
 
   static load(address, { functions, types }) {
@@ -40,7 +49,7 @@ class Contract {
 
         const [from, value, ...txParams] = fullArgs;
         const params = cbor.encode(txParams);
-        const resp = await sendTrx(from, instance.address, instance.methods[name], value, params);
+        const { Return: resp } = await sendTrx(from, instance.address, instance.methods[name], value, params);
 
         if (rtns.length === 0 && !!resp) throw new Error("some response data was not expected and received");
         if (rtns.length > 0 && !resp) throw new Error("some response data was expected but not received");
