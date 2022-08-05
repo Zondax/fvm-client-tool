@@ -1,0 +1,166 @@
+{
+  "functions": [
+    {
+      "name": "GetName",
+      "type": "function",
+      "index": 2,
+      "args": [
+        {
+          "name": "data",
+          "type": "Param"
+        }
+      ],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "GetSymbol",
+      "type": "function",
+      "index": 3,
+      "args": [],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "GetDecimal",
+      "type": "function",
+      "index": 4,
+      "args": [],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "GetTotalSupply",
+      "type": "function",
+      "index": 5,
+      "args": [],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "GetBalanceOf",
+      "type": "function",
+      "index": 6,
+      "args": [
+        {
+          "name": "userAddr",
+          "type": "string"
+        }
+      ],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Transfer",
+      "type": "function",
+      "index": 7,
+      "args": [
+        {
+          "name": "receiverAddr",
+          "type": "string"
+        },
+        {
+          "name": "transferAmount",
+          "type": "u64"
+        }
+      ],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Allowance",
+      "type": "function",
+      "index": 8,
+      "args": [
+        {
+          "name": "ownerAddr",
+          "type": "string"
+        },
+        {
+          "name": "spenderAddr",
+          "type": "string"
+        }
+      ],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "TransferFrom",
+      "type": "function",
+      "index": 9,
+      "args": [
+        {
+          "name": "ownerAddr",
+          "type": "string"
+        },
+        {
+          "name": "receiverAddr",
+          "type": "string"
+        },
+        {
+          "name": "transferAmount",
+          "type": "u64"
+        }
+      ],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Approval",
+      "type": "function",
+      "index": 10,
+      "args": [
+        {
+          "name": "spenderAddr",
+          "type": "string"
+        },
+        {
+          "name": "newAllowance",
+          "type": "u64"
+        }
+      ],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Param",
+      "type": "object",
+      "fields": [
+        {
+          "name": "test",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "version": "0.1.0"
+}

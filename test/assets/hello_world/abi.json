@@ -1,0 +1,17 @@
+{
+  "functions": [
+    {
+      "name": "say_hello",
+      "type": "function",
+      "index": 2,
+      "args": [],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "types": [],
+  "version": "0.1.0"
+}
