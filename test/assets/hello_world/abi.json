@@ -1,6 +1,20 @@
 {
   "functions": [
     {
+      "name": "new",
+      "type": "function",
+      "index": 1,
+      "args": [],
+      "return": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "say_hello",
       "type": "function",
       "index": 2,

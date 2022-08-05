@@ -1,6 +1,20 @@
 {
   "functions": [
     {
+      "name": "new",
+      "type": "function",
+      "index": 1,
+      "args": [],
+      "return": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "GetName",
       "type": "function",
       "index": 2,

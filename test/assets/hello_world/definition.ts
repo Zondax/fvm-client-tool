@@ -1,3 +1,4 @@
-interface Contract{
-	say_hello : () => string
+interface Contract {
+  new: () => [string, string];
+  say_hello: () => string;
 }
