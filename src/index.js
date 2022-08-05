@@ -1,5 +1,6 @@
 const cbor = require("@ipld/dag-cbor");
 const { sendTrx } = require("./client")
+const {checkTypes} = require("./utils");
 
 class Contract{
     methods = {}
@@ -34,6 +35,12 @@ class Contract{
                 if( rtns.length > 0){
                     const respBuffer = Buffer.from(resp, "base64")
                     const decodedResp = cbor.decode(Uint8Array.from(respBuffer));
+
+                    if( !decodedResp instanceof Array ) throw new Error("response data is not contained inside an array, and it should be")
+                    if( rtns.length !== decodedResp.length ) throw new Error("the elements qty in the response are not equal to the ones defined on the ABI")
+
+                    checkTypes(rtns, decodedResp)
+
                     const toReturn = rtns.map((rtn, index) => decodedResp[index])
 
                     if( toReturn.length === 1 ) return toReturn[0]
