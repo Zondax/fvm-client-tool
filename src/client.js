@@ -38,13 +38,13 @@ async function sendTrx(from, to, method, value, params) {
   const { result } = sentTx;
   if (!result) throw new Error("response was not received");
 
-  const { Receipt } = result;
+  const { Receipt, ReturnDec } = result;
   if (!Receipt) throw new Error("receipt was not received");
 
   const { Return, ExitCode } = Receipt;
   if (ExitCode != 0) throw new Error(`response code is ${ExitCode}`);
 
-  return Return;
+  return { Return, ReturnDec };
 }
 
 async function getFee(filRPC, tx) {
