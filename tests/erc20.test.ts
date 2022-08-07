@@ -8,7 +8,8 @@ import { ContractManager } from "../src/index";
 
 jest.setTimeout(60 * 1000);
 
-const ADDRESS_ID_1 = "1006";
+const ADDRESS_ID_1 = "1025";
+const ADDRESS_ID_2 = "1001";
 
 let seed, nodeUrl, nodeToken;
 let cidToUse, contractAddress;
@@ -76,7 +77,27 @@ test("ERC20 - Method GetSymbol", async () => {
 
   try {
     const message = await client.GetSymbol(account, "0");
-    expect(new RegExp(/Token symbol: ZDX/).test(message)).toBeTruthy();
+    expect(message).toMatch(/Token symbol: ZDX/);
+  } catch (e) {
+    if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
+    else console.log("Error: " + e);
+
+    expect(e).not.toBeDefined();
+  }
+});
+
+test("ERC20 - Method Approval", async () => {
+  if (!contractAddress) throw new Error("Contract address should be present in order to run a method");
+
+  const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
+
+  init(nodeUrl, nodeToken);
+  const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/erc20/abi.json"), "utf-8"));
+  const client = ContractManager.load<ERC20>(contractAddress, ABI);
+
+  try {
+    const message = await client.Approval(account, "0", ADDRESS_ID_2, "1000");
+    expect(message).toMatch(`Approval ${ADDRESS_ID_1}${ADDRESS_ID_2} for 1000 ZDX`);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
     else console.log("Error: " + e);
@@ -95,9 +116,9 @@ test("ERC20 - Create and Method GetSymbol ", async () => {
   const client = ContractManager.create<ERC20>(cidToUse, ABI);
 
   try {
-    await client.new(account, "0", "ZondaxCoin", "ZDX", 18, 1000000, ADDRESS_ID_1);
+    await client.new(account, "0", "ZondaxCoin", "ZDX", 18, "1000000", ADDRESS_ID_1);
     const message = await client.GetSymbol(account, "0");
-    expect(new RegExp(/Token symbol: ZDX/).test(message)).toBeTruthy();
+    expect(message).toMatch(/Token symbol: ZDX/);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
     else console.log("Error: " + e);

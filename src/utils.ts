@@ -2,6 +2,7 @@ import * as cbor from "@ipld/dag-cbor";
 import { sendTrx } from "./client";
 import { INIT_ACTOR_ADDRESS, INIT_ACTOR_CREATE_METHOD } from "./constants";
 import { ArgumentABI, FieldABI, FunctionABI, ReturnABI } from "./types";
+import {parseAndValidateArgs} from "./utils/validation";
 
 function attachConstructor(instance: any, name: string, args: ArgumentABI[], rtns: ReturnABI[]) {
   instance[name] = async (...fullArgs: any[]) => {
@@ -11,7 +12,9 @@ function attachConstructor(instance: any, name: string, args: ArgumentABI[], rtn
     if (!instance.cid) throw new Error("cid is not present");
 
     const [from, value, ...txParams] = fullArgs;
-    const fullParams = cbor.encode([instance.cid, Buffer.from(cbor.encode(txParams))]);
+
+    const params = cbor.encode(parseAndValidateArgs(args, txParams));
+    const fullParams = cbor.encode([instance.cid, Buffer.from(params)]);
     const {
       ReturnDec: { IDAddress, RobustAddress },
     } = await sendTrx(from, INIT_ACTOR_ADDRESS, INIT_ACTOR_CREATE_METHOD, value, fullParams);
@@ -31,7 +34,8 @@ function attachMethod(instance: any, name: string, args: ArgumentABI[], rtns: Re
       );
 
     const [from, value, ...txParams] = fullArgs;
-    const params = cbor.encode(txParams);
+
+    const params = cbor.encode(parseAndValidateArgs(args, txParams));
     const { Return: resp } = await sendTrx(from, instance.address, instance.methods[name], value, params);
 
     return validateResponse(rtns, resp);
