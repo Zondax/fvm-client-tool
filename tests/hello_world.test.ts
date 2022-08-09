@@ -66,7 +66,6 @@ test("Hello World - Method say_hello ", async () => {
 
   try {
     const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd"});
-    console.log(message)
     expect(message).toMatch(/^(Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000 \/ CustomType\['field2'\]: 111)$/);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
