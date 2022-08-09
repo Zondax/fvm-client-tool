@@ -6,4 +6,8 @@ export interface Contract{
 }
 export type CustomArgument = { field1: BigInt
 field2: number
+field3: string
+field4: CustomArgument2 }
+export type CustomArgument2 = { field1: BigInt
+field2: number
 field3: string }

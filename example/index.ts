@@ -30,7 +30,7 @@ async function runHelloWorld() {
     await client.new(account, "0");
 
     // Call say_hello method
-    const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd"});
+    const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd",field4:{field1:100n, field2:111, field3: "asdasd"} });
 
     console.log(message)
 }

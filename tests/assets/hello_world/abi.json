@@ -59,6 +59,28 @@
         {
           "name": "field3",
           "type": "string"
+        },
+        {
+          "name": "field4",
+          "type": "CustomArgument2"
+        }
+      ]
+    },
+    {
+      "name": "CustomArgument2",
+      "type": "object",
+      "fields": [
+        {
+          "name": "field1",
+          "type": "u64"
+        },
+        {
+          "name": "field2",
+          "type": "u8"
+        },
+        {
+          "name": "field3",
+          "type": "string"
         }
       ]
     }
