@@ -64,8 +64,8 @@ test("Hello World - Method say_hello ", async () => {
   const client = ContractManager.load<HelloWorld>(contractAddress, ABI);
 
   try {
-    const message = await client.say_hello(account, "0");
-    expect(new RegExp(/Hello world \d+/).test(message)).toBeTruthy();
+    const message = await client.say_hello(account, "0", [BigInt(1000),BigInt(1000)], ["data", "test", "dasda"], {"test": BigInt(1000)});
+    expect(message).toMatch(/Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000/);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
     else console.log("Error: " + e);
@@ -85,8 +85,8 @@ test("Hello World - Create and Method say_hello ", async () => {
 
   try {
     await client.new(account, "0");
-    const message = await client.say_hello(account, "0");
-    expect(new RegExp(/Hello world \d+/).test(message)).toBeTruthy();
+    const message = await client.say_hello(account, "0", [BigInt(1000),BigInt(1000)], ["data", "test", "dasda"], {"test": BigInt(1000)});
+    expect(message).toMatch(/Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000/);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
     else console.log("Error: " + e);

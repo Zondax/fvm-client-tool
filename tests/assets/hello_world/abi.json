@@ -18,7 +18,20 @@
       "name": "say_hello",
       "type": "function",
       "index": 2,
-      "args": [],
+      "args": [
+        {
+          "name": "data1",
+          "type": "Array<u64>"
+        },
+        {
+          "name": "data2",
+          "type": "Array<string>"
+        },
+        {
+          "name": "data3",
+          "type": "Map<string, u64>"
+        }
+      ],
       "return": [
         {
           "type": "string"
