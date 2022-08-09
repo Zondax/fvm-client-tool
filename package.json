@@ -1,14 +1,25 @@
 {
-  "name": "client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "@zondax/fvm-client-tool",
+  "version": "0.0.0",
+  "description": "Filecoin Virtual Machine client tool for AssemblyScript language",
+  "main": "dist/index.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest --runInBand"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zondax/fvm-client-tool.git"
+  },
+  "keywords": [
+    "FVM",
+    "AssemblyScript",
+    "as",
+    "sdk",
+    "client"
+  ],
+  "author": "Zondax AG",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/bigint": "^5.5.29",
     "@types/jest": "^28.1.6",
@@ -21,5 +32,8 @@
   "dependencies": {
     "@ipld/dag-cbor": "^7.0.2",
     "@zondax/filecoin-signing-tools": "1.0.1"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
