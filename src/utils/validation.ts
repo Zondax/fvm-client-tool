@@ -1,5 +1,5 @@
 // @ts-ignore
-import {ArgumentABI, ParamsType} from "../types";
+import {ArgumentABI, ArrayRegex, MapRegex, ParamsType} from "../types";
 
 const UNSIGNED_INT_MAX={ "u8": 255, "u16": 65535, "u32": 4294967295, "u64": BigInt("18446744073709551615") }
 const SIGNED_INT_MAX = { "i8": 127, "i16": 32767, "i32": 2147483647, "i64": BigInt("9223372036854775807") }
@@ -46,7 +46,30 @@ export const parseAndValidateArg = (name: string, type: ParamsType, value: any):
             if(typeof value != "string") throw new Error(`param ${name} should be a string`)
             return value;
 
-        default:
+        case "Uint8Array":
+            if( !(value instanceof Uint8Array )) throw new Error(`param ${name} should be a Uint8Array`)
             return value;
     }
+
+    if(ArrayRegex.test(type)){
+        if( !(value instanceof Array ) ) throw new Error(`param ${name} should be a array`)
+        const [valueType] = type.split("<")[0].split(">")[0]
+
+        const array = value as any[]
+        return array.map((item, index) => parseAndValidateArg(name, valueType as ParamsType, array[index]))
+    }
+
+    if(MapRegex.test(type)){
+        const [_, valueType] = type.split("<")[0].split(">")[0].split(",")
+
+        const obj = value as {[key:string]: any}
+        const parsed: {[key:string]: any} = {}
+        for(let key in obj) {
+            parsed[key] = parseAndValidateArg(name, valueType as ParamsType, obj[key])
+        }
+
+        return obj;
+    }
+
+    return value;
 }

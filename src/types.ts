@@ -1,6 +1,9 @@
 export type Account = { address: string; private_base64: string };
 
-export type ParamsType = "u64" | "u32" | "u16" | "u8" | "i64" | "i32" | "i16" | "i8" | "string";
+export const MapRegex = new RegExp(/^(Map<(.+)>)$/);
+export const ArrayRegex = new RegExp(/^(Array<(.+)>)$/);
+
+export type ParamsType = "u64" | "u32" | "u16" | "u8" | "i64" | "i32" | "i16" | "i8" | "string" | 'Map<>' | 'Array<>' | 'Uint8Array';
 
 export type ReturnABI = {
   type: ParamsType;
