@@ -30,7 +30,7 @@ async function runHelloWorld() {
     await client.new(account, "0");
 
     // Call say_hello method
-    const message = await client.say_hello(account, "0", [BigInt(1000),BigInt(1000)], ["data", "test", "dasda"], {"test": BigInt(1000)});
+    const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd"});
 
     console.log(message)
 }
@@ -45,14 +45,14 @@ async function runERC20() {
     const client = ContractManager.create<ERC20>(cid, ABI);
 
     // Create new instance of the contract
-    await client.new(account, "0", "ZondaxCoin", "ZDX", 18, "1000000", ADDRESS_ID_1);
+    await client.new(account, "0", "ZondaxCoin", "ZDX", 18, 1000000n, ADDRESS_ID_1);
 
     // Call GetSymbol method
     const message1 = await client.GetSymbol(account, "0");
     console.log(message1)
 
     // Call Approval method
-    const message2 = await client.Approval(account, "0", ADDRESS_ID_2, "1000");
+    const message2 = await client.Approval(account, "0", ADDRESS_ID_2, 1000n);
     console.log(message2)
 }
 

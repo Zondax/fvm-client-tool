@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+// @ts-ignore
 import { keyDerive } from "@zondax/filecoin-signing-tools/js";
 import { Contract as ERC20 } from "./assets/erc20/definition";
 
@@ -96,7 +97,7 @@ test("ERC20 - Method Approval", async () => {
   const client = ContractManager.load<ERC20>(contractAddress, ABI);
 
   try {
-    const message = await client.Approval(account, "0", ADDRESS_ID_2, "1000");
+    const message = await client.Approval(account, "0", ADDRESS_ID_2, 1000n);
     expect(message).toMatch(`Approval ${ADDRESS_ID_1}${ADDRESS_ID_2} for 1000 ZDX`);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
@@ -116,7 +117,7 @@ test("ERC20 - Create and Method GetSymbol ", async () => {
   const client = ContractManager.create<ERC20>(cidToUse, ABI);
 
   try {
-    await client.new(account, "0", "ZondaxCoin", "ZDX", 18, "1000000", ADDRESS_ID_1);
+    await client.new(account, "0", "ZondaxCoin", "ZDX", 18, 1000000n, ADDRESS_ID_1);
     const message = await client.GetSymbol(account, "0");
     expect(message).toMatch(/Token symbol: ZDX/);
   } catch (e) {

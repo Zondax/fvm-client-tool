@@ -1,12 +1,13 @@
 import fs from "fs";
 import path from "path";
+// @ts-ignore
 import { keyDerive } from "@zondax/filecoin-signing-tools/js";
 import { Contract as HelloWorld } from "./assets/hello_world/definition";
 
 import { init } from "../src/client";
 import { ContractManager } from "../src/index";
 
-jest.setTimeout(60 * 1000);
+jest.setTimeout(120 * 1000);
 
 let seed, nodeUrl, nodeToken;
 let cidToUse, contractAddress;
@@ -64,8 +65,9 @@ test("Hello World - Method say_hello ", async () => {
   const client = ContractManager.load<HelloWorld>(contractAddress, ABI);
 
   try {
-    const message = await client.say_hello(account, "0", [BigInt(1000),BigInt(1000)], ["data", "test", "dasda"], {"test": BigInt(1000)});
-    expect(message).toMatch(/Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000/);
+    const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd"});
+    console.log(message)
+    expect(message).toMatch(/^(Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000 \/ CustomType\['field2'\]: 111)$/);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
     else console.log("Error: " + e);
@@ -85,8 +87,8 @@ test("Hello World - Create and Method say_hello ", async () => {
 
   try {
     await client.new(account, "0");
-    const message = await client.say_hello(account, "0", [BigInt(1000),BigInt(1000)], ["data", "test", "dasda"], {"test": BigInt(1000)});
-    expect(message).toMatch(/Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000/);
+    const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd"});
+    expect(message).toMatch(/^(Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000 \/ CustomType\['field2'\]: 111)$/);
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
     else console.log("Error: " + e);

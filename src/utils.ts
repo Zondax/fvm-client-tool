@@ -4,7 +4,7 @@ import { INIT_ACTOR_ADDRESS, INIT_ACTOR_CREATE_METHOD } from "./constants";
 import { ArgumentABI, FieldABI, FunctionABI, ReturnABI } from "./types";
 import {parseAndValidateArgs} from "./utils/validation";
 
-function attachConstructor(instance: any, name: string, args: ArgumentABI[], rtns: ReturnABI[]) {
+function attachConstructor(instance: any, name: string, args: ArgumentABI[], rtns: ReturnABI[], customTypes: FieldABI[]) {
   instance[name] = async (...fullArgs: any[]) => {
     if (instance.address)
       throw new Error("you cannot create a new instance because this object has already one attached");
@@ -13,7 +13,7 @@ function attachConstructor(instance: any, name: string, args: ArgumentABI[], rtn
 
     const [from, value, ...txParams] = fullArgs;
 
-    const params = cbor.encode(parseAndValidateArgs(args, txParams));
+    const params = cbor.encode(parseAndValidateArgs(args, customTypes, txParams));
     const fullParams = cbor.encode([instance.cid, Buffer.from(params)]);
     const {
       ReturnDec: { IDAddress, RobustAddress },
@@ -26,7 +26,7 @@ function attachConstructor(instance: any, name: string, args: ArgumentABI[], rtn
   };
 }
 
-function attachMethod(instance: any, name: string, args: ArgumentABI[], rtns: ReturnABI[]) {
+function attachMethod(instance: any, name: string, args: ArgumentABI[], rtns: ReturnABI[], customTypes: FieldABI[]) {
   instance[name] = async (...fullArgs: any[]) => {
     if (!instance.address)
       throw new Error(
@@ -35,18 +35,18 @@ function attachMethod(instance: any, name: string, args: ArgumentABI[], rtns: Re
 
     const [from, value, ...txParams] = fullArgs;
 
-    const params = cbor.encode(parseAndValidateArgs(args, txParams));
+    const params = cbor.encode(parseAndValidateArgs(args, customTypes, txParams));
     const { Return: resp } = await sendTrx(from, instance.address, instance.methods[name], value, params);
 
     return validateResponse(rtns, resp);
   };
 }
 
-export function attachMethods(instance: any, functions: FunctionABI[], types: FieldABI[]) {
+export function attachMethods(instance: any, functions: FunctionABI[], customTypes: FieldABI[]) {
   functions.forEach(({ name, index, args, return: rtns }) => {
     instance.methods[name] = index;
-    if (name === "new" && index === 1) attachConstructor(instance, name, args, rtns);
-    else attachMethod(instance, name, args, rtns);
+    if (name === "new" && index === 1) attachConstructor(instance, name, args, rtns, customTypes);
+    else attachMethod(instance, name, args, rtns, customTypes);
   });
 }
 
