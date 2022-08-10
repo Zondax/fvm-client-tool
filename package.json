@@ -2,7 +2,7 @@
   "name": "@zondax/fvm-client-tool",
   "version": "0.0.0",
   "description": "Filecoin Virtual Machine client tool for AssemblyScript language",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "jest --runInBand"
