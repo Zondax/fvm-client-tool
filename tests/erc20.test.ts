@@ -43,40 +43,17 @@ test("ERC20 - Install actor", async () => {
   cidToUse = cid;
 });
 
-test("ERC20 - Create actor", async () => {
+test("ERC20 - Method GetSymbol", async () => {
   if (!cidToUse) throw new Error("CID should be present in order to create a new instance");
 
   const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
 
   init(nodeUrl, nodeToken);
-  const resp = await ContractManager.instantiate(
-    account,
-    cidToUse,
-    "0",
-    "ZondaxCoin",
-    "ZDX",
-    18,
-    1000000,
-    ADDRESS_ID_1
-  );
-  const { IDAddress, RobustAddress } = resp;
-
-  expect(IDAddress).toBeDefined();
-  expect(RobustAddress).toBeDefined();
-
-  contractAddress = IDAddress;
-});
-
-test("ERC20 - Method GetSymbol", async () => {
-  if (!contractAddress) throw new Error("Contract address should be present in order to run a method");
-
-  const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
-
-  init(nodeUrl, nodeToken);
   const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/erc20/abi.json"), "utf-8"));
-  const client = ContractManager.load<ERC20>(contractAddress, ABI);
+  const client = ContractManager.create<ERC20>(cidToUse, ABI);
 
   try {
+    await client.new(account, "0", { name: "ZondaxCoin", symbol: "ZDX", decimal: 18, totalSupply: 1000000n, ownerAddr: ADDRESS_ID_1 });
     const message = await client.GetSymbol(account, "0");
     expect(message).toMatch(/Token symbol: ZDX/);
   } catch (e) {
@@ -88,26 +65,6 @@ test("ERC20 - Method GetSymbol", async () => {
 });
 
 test("ERC20 - Method Approval", async () => {
-  if (!contractAddress) throw new Error("Contract address should be present in order to run a method");
-
-  const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
-
-  init(nodeUrl, nodeToken);
-  const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/erc20/abi.json"), "utf-8"));
-  const client = ContractManager.load<ERC20>(contractAddress, ABI);
-
-  try {
-    const message = await client.Approval(account, "0", ADDRESS_ID_2, 1000n);
-    expect(message).toMatch(`Approval ${ADDRESS_ID_1}${ADDRESS_ID_2} for 1000 ZDX`);
-  } catch (e) {
-    if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
-    else console.log("Error: " + e);
-
-    expect(e).not.toBeDefined();
-  }
-});
-
-test("ERC20 - Create and Method GetSymbol ", async () => {
   if (!cidToUse) throw new Error("CID should be present in order to create a new instance");
 
   const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
@@ -117,7 +74,28 @@ test("ERC20 - Create and Method GetSymbol ", async () => {
   const client = ContractManager.create<ERC20>(cidToUse, ABI);
 
   try {
-    await client.new(account, "0", "ZondaxCoin", "ZDX", 18, 1000000n, ADDRESS_ID_1);
+    await client.new(account, "0", { name: "ZondaxCoin", symbol: "ZDX", decimal: 18, totalSupply: 1000000n, ownerAddr: ADDRESS_ID_1 });
+    const message = await client.Approval(account, "0", { spenderAddr: ADDRESS_ID_2, newAllowance: 1000n });
+    expect(message).toMatch(`Approval ${ADDRESS_ID_1}${ADDRESS_ID_2} for 1000 ZDX`);
+  } catch (e) {
+    if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
+    else console.log("Error: " + e);
+
+    expect(e).not.toBeDefined();
+  }
+});
+
+test("ERC20 - Method GetSymbol ", async () => {
+  if (!cidToUse) throw new Error("CID should be present in order to create a new instance");
+
+  const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
+
+  init(nodeUrl, nodeToken);
+  const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/erc20/abi.json"), "utf-8"));
+  const client = ContractManager.create<ERC20>(cidToUse, ABI);
+
+  try {
+    await client.new(account, "0", { name: "ZondaxCoin", symbol: "ZDX", decimal: 18, totalSupply: 1000000n, ownerAddr: ADDRESS_ID_1 });
     const message = await client.GetSymbol(account, "0");
     expect(message).toMatch(/Token symbol: ZDX/);
   } catch (e) {

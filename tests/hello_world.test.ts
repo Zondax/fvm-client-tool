@@ -40,42 +40,7 @@ test("Hello World - Install actor", async () => {
   cidToUse = cid;
 });
 
-test("Hello World - Create actor", async () => {
-  if (!cidToUse) throw new Error("CID should be present in order to create a new instance");
-
-  const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
-
-  init(nodeUrl, nodeToken);
-  const resp = await ContractManager.instantiate(account, cidToUse, "0");
-  const { IDAddress, RobustAddress } = resp;
-
-  expect(IDAddress).toBeDefined();
-  expect(RobustAddress).toBeDefined();
-
-  contractAddress = IDAddress;
-});
-
 test("Hello World - Method say_hello ", async () => {
-  if (!contractAddress) throw new Error("Contract address should be present in order to run a method");
-
-  const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
-
-  init(nodeUrl, nodeToken);
-  const ABI = JSON.parse(fs.readFileSync(path.join(__dirname, "./assets/hello_world/abi.json"), "utf-8"));
-  const client = ContractManager.load<HelloWorld>(contractAddress, ABI);
-
-  try {
-    const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd",field4:{field1:100n, field2:111, field3: "asdasd"} });
-    expect(message).toMatch(/^(Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000 \/ CustomType\['field2'\]: 111)$/);
-  } catch (e) {
-    if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
-    else console.log("Error: " + e);
-
-    expect(e).not.toBeDefined();
-  }
-});
-
-test("Hello World - Create and Method say_hello ", async () => {
   if (!cidToUse) throw new Error("CID should be present in order to create a new instance");
 
   const account = keyDerive(seed, "m/44'/461'/0/0/1", "");
@@ -86,8 +51,15 @@ test("Hello World - Create and Method say_hello ", async () => {
 
   try {
     await client.new(account, "0");
-    const message = await client.say_hello(account, "0", [1000n,1000n], ["data", "test", "dasda"], {"test": 1000n}, {field1:100n, field2:111, field3: "asdasd",field4:{field1:100n, field2:111, field3: "asdasd"} });
-    expect(message).toMatch(/^(Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000 \/ CustomType\['field2'\]: 111)$/);
+    const message = await client.say_hello(account, "0", {
+      data1: [1000n, 1000n],
+      data2: ["data", "test", "dasda"],
+      data3: { test: 1000n },
+      data4: { field1: 100n, field2: 111, field3: "asdasd", field4: { field1: 100n, field2: 111, field3: "asdasd" } },
+    });
+    expect(message).toMatch(
+      /^(Hello world \d+ \/ Array\[0\]: 1000 \/ Array\[0\]: data \/ Map\['test'\]: 1000 \/ CustomType\['field2'\]: 111)$/
+    );
   } catch (e) {
     if (e.response) console.log("Error: " + JSON.stringify(e.response.data));
     else console.log("Error: " + e);
