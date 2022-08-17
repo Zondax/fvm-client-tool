@@ -40,7 +40,7 @@ async function runHelloWorld() {
     data4: { field1: 100n, field2: 111, field3: "asdasd", field4: { field1: 100n, field2: 111, field3: "asdasd" } },
   });
 
-  console.log(message);
+  console.log("Result: " + message);
   console.log("-------");
 }
 
@@ -70,7 +70,7 @@ async function runCustom() {
     },
   });
 
-  console.log(message);
+  console.log("Result: " + message);
   console.log("-------");
 }
 
@@ -91,12 +91,12 @@ async function runERC20() {
   // Call GetSymbol method
   console.log("Calling GetSymbol");
   const message1 = await client.GetSymbol(account, "0");
-  console.log(message1);
+  console.log("Result: " + message1);
 
   // Call Approval method
   console.log("Calling Approval");
   const message2 = await client.Approval(account, "0", { spenderAddr: ADDRESS_ID_2, newAllowance: 1000n });
-  console.log(message2);
+  console.log("Result: " + message2);
   console.log("-------");
 }
 
