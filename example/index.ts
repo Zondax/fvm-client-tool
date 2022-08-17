@@ -33,14 +33,13 @@ async function runHelloWorld() {
 
   // Call say_hello method
   console.log("Calling say_hello");
-  const message = await client.say_hello(account, "0", {
-    data1: [1000n, 1000n],
-    data2: ["data", "test", "dasda"],
-    data3: { test: 1000n },
-    data4: { field1: 100n, field2: 111, field3: "asdasd", field4: { field1: 100n, field2: 111, field3: "asdasd" } },
-  });
+  const message1 = await client.say_hello(account, "0");
+  console.log("Result: " + message1);
 
-  console.log("Result: " + message);
+  // Call say_hello method
+  console.log("Calling say_hello");
+  const message2 = await client.say_hello(account, "0");
+  console.log("Result: " + message2);
   console.log("-------");
 }
 

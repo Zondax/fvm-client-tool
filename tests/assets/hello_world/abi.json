@@ -18,24 +18,7 @@
       "name": "say_hello",
       "type": "function",
       "index": 2,
-      "args": [
-        {
-          "name": "data1",
-          "type": "Array<u64>"
-        },
-        {
-          "name": "data2",
-          "type": "Array<string>"
-        },
-        {
-          "name": "data3",
-          "type": "Map<string, u64>"
-        },
-        {
-          "name": "data4",
-          "type": "CustomArgument"
-        }
-      ],
+      "args": [],
       "return": [
         {
           "type": "string"
@@ -43,47 +26,6 @@
       ]
     }
   ],
-  "types": [
-    {
-      "name": "CustomArgument",
-      "type": "object",
-      "fields": [
-        {
-          "name": "field1",
-          "type": "u64"
-        },
-        {
-          "name": "field2",
-          "type": "u8"
-        },
-        {
-          "name": "field3",
-          "type": "string"
-        },
-        {
-          "name": "field4",
-          "type": "CustomArgument2"
-        }
-      ]
-    },
-    {
-      "name": "CustomArgument2",
-      "type": "object",
-      "fields": [
-        {
-          "name": "field1",
-          "type": "u64"
-        },
-        {
-          "name": "field2",
-          "type": "u8"
-        },
-        {
-          "name": "field3",
-          "type": "string"
-        }
-      ]
-    }
-  ],
+  "types": [],
   "version": "0.1.0"
 }
