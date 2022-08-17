@@ -1,0 +1,81 @@
+{
+  "functions": [
+    {
+      "name": "new",
+      "type": "function",
+      "index": 1,
+      "args": [],
+      "return": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "say_hello",
+      "type": "function",
+      "index": 2,
+      "args": [
+        {
+          "name": "u64Array",
+          "type": "Array<u64>"
+        },
+        {
+          "name": "stringArray",
+          "type": "Array<string>"
+        },
+        {
+          "name": "u64Map",
+          "type": "Map<string, u64>"
+        },
+        {
+          "name": "customArg",
+          "type": "CustomArgument"
+        }
+      ],
+      "return": [
+        {
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "CustomArgument",
+      "type": "object",
+      "fields": [
+        {
+          "name": "argumentsArray",
+          "type": "Array<CustomArgument2>"
+        },
+        {
+          "name": "argumentsMap",
+          "type": "Map<string, CustomArgument2>"
+        }
+      ]
+    },
+    {
+      "name": "CustomArgument2",
+      "type": "object",
+      "fields": [
+        {
+          "name": "counterLong",
+          "type": "u64"
+        },
+        {
+          "name": "counterShort",
+          "type": "u8"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "version": "0.1.0"
+}
