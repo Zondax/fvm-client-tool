@@ -4,11 +4,7 @@ import { ArgumentABI, ArrayRegex, FieldABI, MapRegex, ParamsType } from "../type
 const UNSIGNED_INT_MAX = { u8: 255, u16: 65535, u32: 4294967295, u64: BigInt("18446744073709551615") };
 const SIGNED_INT_MAX = { i8: 127, i16: 32767, i32: 2147483647, i64: BigInt("9223372036854775807") };
 
-export const parseAndValidateArgs = (
-  args: ArgumentABI[],
-  customTypes: FieldABI[],
-  txArgs: { [key: string]: any }
-): any[] => {
+export const parseAndValidateArgs = (args: ArgumentABI[], customTypes: FieldABI[], txArgs: { [key: string]: any }): any[] => {
   return args.map(({ type, name }) => {
     const txArg = txArgs[name];
     if (!txArg) throw new Error(`argument ${name} is required`);
@@ -25,8 +21,7 @@ export const parseAndValidateArg = (name: string, type: ParamsType, value: any, 
     case "u32":
       parsedNumber = parseInt(value);
       if (isNaN(parsedNumber)) throw new Error(`param ${name} should be a integer - value ${value}`);
-      if (parsedNumber > UNSIGNED_INT_MAX[type] || parsedNumber < 0)
-        throw new Error(`param ${name} should be a ${type} - value ${value}`);
+      if (parsedNumber > UNSIGNED_INT_MAX[type] || parsedNumber < 0) throw new Error(`param ${name} should be a ${type} - value ${value}`);
       return parsedNumber;
 
     case "i8":
@@ -41,8 +36,7 @@ export const parseAndValidateArg = (name: string, type: ParamsType, value: any, 
     case "u64":
       if (typeof value != "bigint") throw new Error(`param ${name} should be a BigInt - value ${value}`);
       parsedBigInt = value;
-      if (parsedBigInt > UNSIGNED_INT_MAX[type] || parsedBigInt < BigInt(0))
-        throw new Error(`param ${name} should be a ${type}`);
+      if (parsedBigInt > UNSIGNED_INT_MAX[type] || parsedBigInt < BigInt(0)) throw new Error(`param ${name} should be a ${type}`);
       return parsedBigInt;
 
     case "i64":
@@ -63,22 +57,22 @@ export const parseAndValidateArg = (name: string, type: ParamsType, value: any, 
 
   if (ArrayRegex.test(type)) {
     if (!(value instanceof Array)) throw new Error(`param ${name} should be a array - value ${value}`);
-    const [valueType] = type.split("<")[0].split(">")[0];
+    const [valueType] = type.split("<")[1].split(">");
 
     const array = value as any[];
-    return array.map((item, index) => parseAndValidateArg(name, valueType as ParamsType, array[index], customTypes));
+    return array.map((item, index) => parseAndValidateArg(name, valueType.trim() as ParamsType, array[index], customTypes));
   }
 
   if (MapRegex.test(type)) {
-    const [_, valueType] = type.split("<")[0].split(">")[0].split(",");
+    const [_, valueType] = type.split("<")[1].split(">")[0].split(",");
 
     const obj = value as { [key: string]: any };
     const parsed: { [key: string]: any } = {};
     for (let key in obj) {
-      parsed[key] = parseAndValidateArg(name, valueType as ParamsType, obj[key], customTypes);
+      parsed[key] = parseAndValidateArg(name, valueType.trim() as ParamsType, obj[key], customTypes);
     }
 
-    return obj;
+    return parsed;
   }
 
   const customTypeDef = customTypes.filter(({ name: customTypeFieldName }) => type == customTypeFieldName);
@@ -88,12 +82,7 @@ export const parseAndValidateArg = (name: string, type: ParamsType, value: any, 
       case "object":
         const obj = value as { [key: string]: any };
         return fields.map(({ name: customTypeFieldName, type: customTypeFieldType }) =>
-          parseAndValidateArg(
-            `${name}.${customTypeFieldName}`,
-            customTypeFieldType,
-            obj[customTypeFieldName],
-            customTypes
-          )
+          parseAndValidateArg(`${name}.${customTypeFieldName}`, customTypeFieldType, obj[customTypeFieldName], customTypes)
         );
       default:
         throw new Error(`custom type ${name} is not currently supported`);
