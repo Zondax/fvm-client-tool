@@ -46,4 +46,9 @@ export class ContractManager {
     if (this.address) throw new Error("the contract address cannot be changed");
     this.address = address;
   };
+
+  getContractAddress = (): string => {
+    if (!this.address) throw new Error("the contract address is not there yet");
+    return this.address;
+  };
 }

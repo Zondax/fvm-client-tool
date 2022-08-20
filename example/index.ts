@@ -57,19 +57,31 @@ async function runCustom() {
   console.log("Instantiating Custom");
   await client.new(account, "0");
 
-  // Call say_hello method
-  console.log("Calling say_hello");
-  const message = await client.say_hello(account, "0", {
+  // Create client from pre-existing instance of the contract
+  const contractAddress = (client as any as ContractManager).getContractAddress();
+  const clientFromAddress = ContractManager.load<Custom>(contractAddress, ABI);
+
+  const args = {
     u64Array: [1000n, 1000n],
     stringArray: ["data", "test", "dasda"],
     u64Map: { test: 1000n },
     customArg: {
-      argumentsArray: [{ counterLong: 100n, counterShort: 111, message: "testing message 1" }],
+      argumentsArray: [{ counterLong: 100n, counterShort: 11111, message: "testing message 1" }],
       argumentsMap: { field1: { counterLong: 100n, counterShort: 111, message: "testing message 2" } },
     },
-  });
+  };
 
-  console.log("Result: " + message);
+  // Call say_hello method
+  console.log("Calling say_hello from new instance");
+  const message_1 = await client.say_hello(account, "0", args);
+
+  console.log("Result: " + message_1);
+
+  // Call say_hello method
+  console.log("Calling say_hello from pre-existing instance");
+  const message_2 = await clientFromAddress.say_hello(account, "0", args);
+
+  console.log("Result: " + message_2);
   console.log("-------");
 }
 
@@ -108,4 +120,5 @@ async function runSequentially() {
 // Init lib config
 init(nodeUrl, nodeToken);
 
+// Run examples
 runSequentially();
